@@ -4,24 +4,42 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    Rigidbody2D rb2D = null;
 
-	// Use this for initialization
-	void Start ()
+    public float rotationCoefficient = 50.0f;
+    public float accelerationCoefficient = 50.0f;
+
+    // Use this for initialization
+    void Start ()
     {
-        
+        rb2D = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void Update ()
     {
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (transform.position.y > 5)
         {
-            GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1);
+            transform.position = new Vector3(transform.position.x, -5, 0);
+        }
+        if (transform.position.y < -5)
+        {
+            transform.position = new Vector3(transform.position.x, 5, 0);
         }
 
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (transform.position.x > 8)
         {
-            GetComponent<Rigidbody2D>().velocity = new Vector2(0, -1);
+            transform.position = new Vector3(-8, transform.position.y, 0);
         }
+        if (transform.position.x < -8)
+        {
+            transform.position = new Vector3(8, transform.position.y, 0);
+        }
+    }
+    private void FixedUpdate()
+    {
+        transform.Rotate(0, 0, -Input.GetAxis("Horizontal") * Time.deltaTime * rotationCoefficient);
+
+        rb2D.AddForce(Input.GetAxis("Vertical") * transform.up * accelerationCoefficient);
     }
 }
